@@ -3,6 +3,8 @@ import { api } from '../api'
 import { useAuth } from '../context/AuthContext'
 import BookingCard from '../components/BookingCard'
 import CreditBadge from '../components/CreditBadge'
+import Skeleton from '../components/Skeleton'
+import ErrorMessage from '../components/ErrorMessage'
 
 export default function MyBookings() {
   const { user, fetchUser } = useAuth()
@@ -46,21 +48,25 @@ export default function MyBookings() {
 
   if (loading) {
     return (
-      <div className="p-4 text-center text-text-secondary">Loading bookings...</div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <Skeleton variant="title" />
+          <Skeleton variant="badge" />
+        </div>
+        <Skeleton variant="card" count={3} />
+      </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-enter">
       <div className="flex items-center justify-between">
         <h1 className="text-title-page font-bold">My Bookings</h1>
         <CreditBadge credits={user?.credits ?? 0} size="small" />
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-accent-red text-accent-red rounded-card p-3 text-sm">
-          {error}
-        </div>
+        <ErrorMessage error={{ message: error }} onRetry={fetchBookings} />
       )}
 
       {bookings.length === 0 && (

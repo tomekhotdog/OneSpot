@@ -19,7 +19,7 @@ export default function BookingCard({ booking, onCancel }) {
   }
 
   return (
-    <div className="bg-bg-card rounded-card p-4 border border-border">
+    <div className="bg-bg-card rounded-card p-4 border border-border card-appear">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="bg-primary-light text-primary text-sm font-bold rounded-button px-2 py-1">

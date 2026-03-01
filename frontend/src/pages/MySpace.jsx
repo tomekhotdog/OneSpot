@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../api'
 import WeekPatternEditor from '../components/WeekPatternEditor'
+import Skeleton from '../components/Skeleton'
 
 const DAY_NAMES = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
@@ -171,8 +172,9 @@ export default function MySpace() {
   if (loading) {
     return (
       <div className="max-w-content mx-auto">
-        <h1 className="text-title-page font-bold text-text-primary">My Space</h1>
-        <p className="text-text-secondary mt-2">Loading...</p>
+        <Skeleton variant="title" className="mb-4" />
+        <Skeleton variant="card" count={2} />
+        <Skeleton variant="text" count={3} className="mt-4" />
       </div>
     )
   }
@@ -182,7 +184,7 @@ export default function MySpace() {
   const oneOffs = availabilities.filter((a) => a.type === 'one_off')
 
   return (
-    <div className="max-w-content mx-auto">
+    <div className="max-w-content mx-auto page-enter">
       {/* Header */}
       <h1 className="text-title-page font-bold text-text-primary mb-1">
         My Space &mdash; Bay {user.bay_number}

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { api } from '../api'
 import CreditBadge from '../components/CreditBadge'
 import BookingCard from '../components/BookingCard'
+import Skeleton from '../components/Skeleton'
 
 export default function Home() {
   const { user } = useAuth()
@@ -32,7 +33,7 @@ export default function Home() {
   const hasMore = upcoming.length > 3
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-enter">
       {/* Greeting */}
       <h1 className="text-title-page font-bold">Hi, {user?.name || 'there'}!</h1>
 
@@ -79,7 +80,7 @@ export default function Home() {
       <div>
         <h2 className="text-title-section font-semibold mb-3">Upcoming Bookings</h2>
         {loading ? (
-          <p className="text-sm text-text-secondary">Loading...</p>
+          <Skeleton variant="card" count={2} />
         ) : upcomingPreview.length === 0 ? (
           <div className="bg-bg-card rounded-card p-6 border border-border text-center">
             <p className="text-text-secondary text-sm">

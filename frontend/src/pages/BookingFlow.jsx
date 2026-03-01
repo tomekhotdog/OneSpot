@@ -4,6 +4,8 @@ import { api } from '../api'
 import { useAuth } from '../context/AuthContext'
 import TimelinePicker from '../components/TimelinePicker'
 import CreditBadge from '../components/CreditBadge'
+import Skeleton from '../components/Skeleton'
+import Disclaimer from '../components/Disclaimer'
 
 export default function BookingFlow() {
   const { bayId } = useParams()
@@ -101,12 +103,16 @@ export default function BookingFlow() {
 
   if (loading) {
     return (
-      <div className="p-4 text-center text-text-secondary">Loading bay details...</div>
+      <div className="space-y-6">
+        <Skeleton variant="title" />
+        <Skeleton variant="card" count={2} />
+        <Skeleton variant="text" count={3} />
+      </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-enter">
       <h1 className="text-title-page font-bold">Book a Space</h1>
 
       {error && (
@@ -190,6 +196,10 @@ export default function BookingFlow() {
               <span className="text-text-secondary">Cost</span>
               <span className="font-semibold text-primary">{creditCost} credits</span>
             </div>
+          </div>
+
+          <div className="px-2">
+            <Disclaimer />
           </div>
 
           <div className="flex gap-3">

@@ -21,9 +21,13 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-bg-page flex flex-col">
-      <main className="flex-1 w-full max-w-content mx-auto px-4 pb-20 pt-4">
+      <main className="flex-1 w-full max-w-content mx-auto px-4 pb-24 pt-4">
         <Outlet />
       </main>
+
+      <footer className="w-full max-w-content mx-auto px-6 pb-20 text-center">
+        <Disclaimer />
+      </footer>
 
       <nav className="fixed bottom-0 inset-x-0 bg-bg-card border-t border-border">
         <div className="max-w-content mx-auto flex justify-around py-2">
