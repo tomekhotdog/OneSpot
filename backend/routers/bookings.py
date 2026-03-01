@@ -360,6 +360,12 @@ async def cancel_booking(
         )
 
     # Send notifications
+    send_message(
+        current_user.phone,
+        "booking_cancelled_booker",
+        {"bay": booking.bay_number, "date": booking.date},
+        state_manager=state_manager,
+    )
     owner = state.users.get(booking.owner_user_id)
     if owner:
         send_message(
