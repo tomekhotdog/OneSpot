@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -5,9 +6,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from backend.routers import admin, auth, availability, bookings, map as map_router, users
+from backend.routers import admin, auth, availability, bookings, browse, map as map_router, users
+from backend.services.scheduler import start_scheduler
 
-app = FastAPI(title="OneSpot", version="1.0.0")
+
+@asynccontextmanager
+async def lifespan(app):
+    scheduler = start_scheduler()
+    yield
+    scheduler.shutdown()
+
+
+app = FastAPI(title="OneSpot", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,6 +33,7 @@ app.include_router(users.router, prefix="/api/users", tags=["users"])
 app.include_router(availability.router, prefix="/api/availability", tags=["availability"])
 app.include_router(bookings.router, prefix="/api/bookings", tags=["bookings"])
 app.include_router(map_router.router, prefix="/api/map", tags=["map"])
+app.include_router(browse.router, prefix="/api/browse", tags=["browse"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 
 # Serve frontend static files (production)
