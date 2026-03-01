@@ -45,7 +45,7 @@ def owner():
         flat_number="1A",
         phone="+447700900001",
         is_owner=True,
-        bay_number="A-001",
+        bay_number="1",
         credits=24,
     )
 
@@ -66,7 +66,7 @@ def setup_state(sm, owner, booker):
     booking1 = Booking(
         booker_user_id=booker.id,
         owner_user_id=owner.id,
-        bay_number="A-001",
+        bay_number="1",
         date="2026-03-02",
         start_hour=9,
         end_hour=12,
@@ -76,7 +76,7 @@ def setup_state(sm, owner, booker):
     booking2 = Booking(
         booker_user_id=booker.id,
         owner_user_id=owner.id,
-        bay_number="A-001",
+        bay_number="1",
         date="2026-03-03",
         start_hour=10,
         end_hour=14,
@@ -203,4 +203,4 @@ class TestGetStats:
         assert data["active_bookings"] == 1
         assert data["cancelled_bookings"] == 1
         assert data["total_credits_in_circulation"] == 48  # 24 + 24
-        assert data["most_active_bay"] == "A-001"
+        assert data["most_active_bay"] == "1"

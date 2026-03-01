@@ -38,7 +38,7 @@ def owner():
         flat_number="1A",
         phone="+447700900001",
         is_owner=True,
-        bay_number="A-001",
+        bay_number="1",
         credits=24,
     )
 
@@ -61,7 +61,7 @@ def owner_restricted():
         flat_number="3C",
         phone="+447700900003",
         is_owner=True,
-        bay_number="A-002",
+        bay_number="2",
         credits=24,
         availability_permission="owners_only",
     )
@@ -75,7 +75,7 @@ def booker_owner():
         flat_number="4D",
         phone="+447700900004",
         is_owner=True,
-        bay_number="A-003",
+        bay_number="3",
         credits=24,
     )
 
@@ -103,7 +103,7 @@ def setup_state(sm, owner, booker):
     # Create recurring availability for Monday 8-18
     avail = Availability(
         user_id=owner.id,
-        bay_number="A-001",
+        bay_number="1",
         type=AvailabilityType.RECURRING,
         pattern={"monday": DayHours(start=8, end=18)},
     )
@@ -129,12 +129,12 @@ class TestCreateBooking:
         token, date_str = setup_state
         resp = client.post(
             "/api/bookings",
-            json={"bay_number": "A-001", "date": date_str, "start_hour": 9, "end_hour": 12},
+            json={"bay_number": "1", "date": date_str, "start_hour": 9, "end_hour": 12},
             cookies={"session_token": token},
         )
         assert resp.status_code == 200
         data = resp.json()
-        assert data["bay_number"] == "A-001"
+        assert data["bay_number"] == "1"
         assert data["start_hour"] == 9
         assert data["end_hour"] == 12
         assert data["credits_charged"] == 3
@@ -156,7 +156,7 @@ class TestCreateBooking:
 
         resp = client.post(
             "/api/bookings",
-            json={"bay_number": "A-001", "date": date_str, "start_hour": 9, "end_hour": 12},
+            json={"bay_number": "1", "date": date_str, "start_hour": 9, "end_hour": 12},
             cookies={"session_token": token},
         )
         assert resp.status_code == 400
@@ -169,7 +169,7 @@ class TestCreateBooking:
 
         avail = Availability(
             user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             type=AvailabilityType.RECURRING,
             pattern={"monday": DayHours(start=8, end=18)},
         )
@@ -183,7 +183,7 @@ class TestCreateBooking:
 
         resp = client.post(
             "/api/bookings",
-            json={"bay_number": "A-001", "date": future_monday.isoformat(), "start_hour": 9, "end_hour": 12},
+            json={"bay_number": "1", "date": future_monday.isoformat(), "start_hour": 9, "end_hour": 12},
             cookies={"session_token": token},
         )
         assert resp.status_code == 400
@@ -196,7 +196,7 @@ class TestCreateBooking:
 
         resp = client.post(
             "/api/bookings",
-            json={"bay_number": "A-001", "date": future_tuesday.isoformat(), "start_hour": 9, "end_hour": 12},
+            json={"bay_number": "1", "date": future_tuesday.isoformat(), "start_hour": 9, "end_hour": 12},
             cookies={"session_token": token},
         )
         assert resp.status_code == 400
@@ -209,7 +209,7 @@ class TestCreateBooking:
         existing = Booking(
             booker_user_id=booker.id,
             owner_user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             date=date_str,
             start_hour=10,
             end_hour=13,
@@ -223,7 +223,7 @@ class TestCreateBooking:
 
         resp = client.post(
             "/api/bookings",
-            json={"bay_number": "A-001", "date": date_str, "start_hour": 11, "end_hour": 14},
+            json={"bay_number": "1", "date": date_str, "start_hour": 11, "end_hour": 14},
             cookies={"session_token": token},
         )
         assert resp.status_code == 409
@@ -236,7 +236,7 @@ class TestCreateBooking:
 
         avail = Availability(
             user_id=owner_restricted.id,
-            bay_number="A-002",
+            bay_number="2",
             type=AvailabilityType.RECURRING,
             pattern={"monday": DayHours(start=8, end=18)},
         )
@@ -251,7 +251,7 @@ class TestCreateBooking:
 
         resp = client.post(
             "/api/bookings",
-            json={"bay_number": "A-002", "date": future_monday.isoformat(), "start_hour": 9, "end_hour": 12},
+            json={"bay_number": "2", "date": future_monday.isoformat(), "start_hour": 9, "end_hour": 12},
             cookies={"session_token": token},
         )
         assert resp.status_code == 403
@@ -266,7 +266,7 @@ class TestGetMine:
         booking_mine = Booking(
             booker_user_id=booker.id,
             owner_user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             date=date_str,
             start_hour=9,
             end_hour=12,
@@ -276,7 +276,7 @@ class TestGetMine:
         booking_other = Booking(
             booker_user_id=other_user.id,
             owner_user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             date=date_str,
             start_hour=13,
             end_hour=15,
@@ -304,7 +304,7 @@ class TestExtendBooking:
         booking = Booking(
             booker_user_id=booker.id,
             owner_user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             date=date_str,
             start_hour=9,
             end_hour=12,
@@ -339,7 +339,7 @@ class TestReduceBooking:
         booking = Booking(
             booker_user_id=booker.id,
             owner_user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             date=date_str,
             start_hour=9,
             end_hour=14,
@@ -374,7 +374,7 @@ class TestCancelBooking:
         booking = Booking(
             booker_user_id=booker.id,
             owner_user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             date=date_str,
             start_hour=9,
             end_hour=12,
@@ -406,7 +406,7 @@ class TestCancelBooking:
         booking = Booking(
             booker_user_id=booker.id,
             owner_user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             date=date_str,
             start_hour=9,
             end_hour=12,

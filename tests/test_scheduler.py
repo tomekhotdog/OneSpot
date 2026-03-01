@@ -28,7 +28,7 @@ def owner():
         flat_number="1A",
         phone="+447700900001",
         is_owner=True,
-        bay_number="A-001",
+        bay_number="1",
         credits=24,
     )
 
@@ -95,7 +95,7 @@ class TestCheckUpcomingReminders:
         booking = Booking(
             booker_user_id=booker.id,
             owner_user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             date=now.date().isoformat(),
             start_hour=9,
             end_hour=14,
@@ -142,7 +142,7 @@ class TestCheckUpcomingReminders:
         booking = Booking(
             booker_user_id=booker.id,
             owner_user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             date=now.date().isoformat(),
             start_hour=9,
             end_hour=14,
@@ -183,7 +183,7 @@ class TestCheckUpcomingReminders:
         booking = Booking(
             booker_user_id=booker.id,
             owner_user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             date=now.date().isoformat(),
             start_hour=9,
             end_hour=14,
@@ -224,7 +224,7 @@ class TestCheckUpcomingReminders:
         booking = Booking(
             booker_user_id=booker.id,
             owner_user_id=owner.id,
-            bay_number="A-001",
+            bay_number="1",
             date=now.date().isoformat(),
             start_hour=9,
             end_hour=14,

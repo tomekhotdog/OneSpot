@@ -66,7 +66,7 @@ class TestFullBookingFlow:
         assert resp.status_code == 200
         assert resp.json()["is_new_user"] is True
 
-        # ── Step 4: Register owner with bay A-001 ──
+        # ── Step 4: Register owner with bay 1 ──
         resp = client.post(
             "/api/users/register",
             json={
@@ -74,7 +74,7 @@ class TestFullBookingFlow:
                 "flat_number": "1A",
                 "phone": owner_phone,
                 "is_owner": True,
-                "bay_number": "A-001",
+                "bay_number": "1",
             },
         )
         assert resp.status_code == 200
@@ -142,15 +142,15 @@ class TestFullBookingFlow:
         )
         assert resp.status_code == 200
         bays = resp.json()["bays"]
-        a001_bays = [b for b in bays if b["number"] == "A-001"]
+        a001_bays = [b for b in bays if b["number"] == "1"]
         assert len(a001_bays) == 1
         assert a001_bays[0]["status"] == "available"
 
-        # ── Step 9: Non-owner creates booking for A-001 Mon 9-17 ──
+        # ── Step 9: Non-owner creates booking for bay 1 Mon 9-17 ──
         resp = client.post(
             "/api/bookings",
             json={
-                "bay_number": "A-001",
+                "bay_number": "1",
                 "date": monday_str,
                 "start_hour": 9,
                 "end_hour": 17,

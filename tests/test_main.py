@@ -10,7 +10,7 @@ def test_api_bays():
     data = response.json()
     assert "bays" in data
     assert "levels" in data
-    assert len(data["bays"]) == 150
+    assert len(data["bays"]) == 47
 
 
 def test_unknown_api_route():
