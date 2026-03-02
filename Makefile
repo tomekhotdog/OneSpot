@@ -9,7 +9,7 @@ dev:
 	@echo "  Frontend: http://localhost:5173"
 	@echo ""
 	@trap 'kill 0' EXIT; \
-		EMAIL_MOCK=true uvicorn backend.main:app --reload --port $(BACKEND_PORT) 2>&1 | tee /tmp/onespot-backend.log | sed 's/^/[backend]  /' & \
+		PYTHONUNBUFFERED=1 EMAIL_MOCK=true uvicorn backend.main:app --reload --port $(BACKEND_PORT) 2>&1 | tee /tmp/onespot-backend.log | sed 's/^/[backend]  /' & \
 		cd frontend && VITE_BACKEND_PORT=$(BACKEND_PORT) npm run dev 2>&1 | sed 's/^/[frontend] /' & \
 		wait
 
