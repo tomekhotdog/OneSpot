@@ -8,8 +8,8 @@ export default function Login() {
   const navigate = useNavigate()
   const { fetchUser } = useAuth()
 
-  const [phone, setPhone] = useState('+44')
-  const [step, setStep] = useState('phone') // 'phone' | 'code'
+  const [email, setEmail] = useState('')
+  const [step, setStep] = useState('email') // 'email' | 'code'
   const [code, setCode] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -42,14 +42,14 @@ export default function Login() {
     e.preventDefault()
     setError('')
 
-    if (phone.length < 6) {
-      setError('Please enter a valid phone number.')
+    if (!email.includes('@')) {
+      setError('Please enter a valid email address.')
       return
     }
 
     setLoading(true)
     try {
-      const data = await api.auth.requestOTP(phone)
+      const data = await api.auth.requestOTP(email)
       setCountdown(data.expires_in || 300)
       setStep('code')
       setCode('')
@@ -75,9 +75,9 @@ export default function Login() {
 
     setLoading(true)
     try {
-      const data = await api.auth.verifyOTP(phone, code)
+      const data = await api.auth.verifyOTP(email, code)
       if (data.is_new_user) {
-        navigate('/signup', { state: { phone } })
+        navigate('/signup', { state: { email } })
       } else {
         await fetchUser()
         navigate('/')
@@ -90,7 +90,7 @@ export default function Login() {
   }
 
   const handleResend = () => {
-    setStep('phone')
+    setStep('email')
     setCode('')
     setError('')
     setCountdown(0)
@@ -107,16 +107,16 @@ export default function Login() {
             </p>
           </div>
 
-          {step === 'phone' && (
+          {step === 'email' && (
             <form onSubmit={handleSendCode}>
               <label className="block text-body font-medium text-text-primary mb-1">
-                Phone number
+                Email address
               </label>
               <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+447700900001"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
                 className="w-full px-3 py-2.5 border border-border rounded-button text-body
                   focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 autoFocus
@@ -140,7 +140,7 @@ export default function Login() {
           {step === 'code' && (
             <form onSubmit={handleVerify}>
               <p className="text-body text-text-secondary mb-3">
-                We sent a 6-digit code to <span className="font-medium text-text-primary">{phone}</span>
+                We sent a 6-digit code to <span className="font-medium text-text-primary">{email}</span>
               </p>
 
               <label className="block text-body font-medium text-text-primary mb-1">
@@ -189,7 +189,7 @@ export default function Login() {
                 className="w-full mt-2 text-primary text-body font-medium py-2
                   hover:text-primary-dark transition-colors"
               >
-                Use a different number
+                Use a different email
               </button>
             </form>
           )}

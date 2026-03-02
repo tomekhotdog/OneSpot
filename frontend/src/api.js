@@ -24,8 +24,8 @@ async function request(path, options = {}) {
 
 export const api = {
   auth: {
-    requestOTP: (phone) => request('/auth/request-otp', { method: 'POST', body: JSON.stringify({ phone }) }),
-    verifyOTP: (phone, code) => request('/auth/verify-otp', { method: 'POST', body: JSON.stringify({ phone, code }) }),
+    requestOTP: (email) => request('/auth/request-otp', { method: 'POST', body: JSON.stringify({ email }) }),
+    verifyOTP: (email, code) => request('/auth/verify-otp', { method: 'POST', body: JSON.stringify({ email, code }) }),
     logout: () => request('/auth/logout', { method: 'POST' }),
   },
   users: {
