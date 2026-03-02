@@ -6,9 +6,9 @@ BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
 PORT = int(os.getenv("PORT", "8000"))
 OTP_SECRET = os.getenv("OTP_SECRET", "dev-secret-change-me")
 SESSION_SECRET = os.getenv("SESSION_SECRET", "dev-session-secret-change-me")
-WHATSAPP_API_TOKEN = os.getenv("WHATSAPP_API_TOKEN", "")
-WHATSAPP_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "")
-WHATSAPP_MOCK = os.getenv("WHATSAPP_MOCK", "true").lower() == "true"
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+EMAIL_MOCK = os.getenv("EMAIL_MOCK", "true").lower() == "true"
+EMAIL_FROM = os.getenv("EMAIL_FROM", "OneSpot <onboarding@resend.dev>")
 ADMIN_API_KEY = os.getenv("ADMIN_API_KEY", "dev-admin-key")
 STATE_FILE_PATH = Path(os.getenv("STATE_FILE_PATH", "./backend/data/state.json"))
 
