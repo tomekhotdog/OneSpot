@@ -94,20 +94,20 @@ Frontend tests use Vitest and Testing Library.
 
 ---
 
-## Mock WhatsApp Mode
+## Mock Email Mode
 
-By default, `WHATSAPP_MOCK=true` is set in `.env.example`. In mock mode:
+By default, `EMAIL_MOCK=true` is set in `.env.example`. In mock mode:
 
-- OTP codes are **logged to the server console** instead of being sent via WhatsApp.
-- No Meta Business Account or API credentials are needed.
-- All WhatsApp notification sends are logged but not actually dispatched.
+- OTP codes are **logged to the server console** instead of being sent via email.
+- No Resend account or API credentials are needed.
+- All email notification sends are logged but not actually dispatched.
 
 Look for log output like:
 ```
-[MOCK WHATSAPP] OTP for +447123456789: 847291
+[MOCK EMAIL] OTP for user@example.com: 847291
 ```
 
-To test with real WhatsApp delivery, set `WHATSAPP_MOCK=false` and provide valid `WHATSAPP_API_TOKEN` and `WHATSAPP_PHONE_NUMBER_ID` values.
+To test with real email delivery, set `EMAIL_MOCK=false` and provide a valid `RESEND_API_KEY`.
 
 ---
 
@@ -171,7 +171,7 @@ OneSpot/
 │   ├── models.py            # Pydantic models
 │   ├── dependencies.py      # FastAPI dependency injection
 │   ├── routers/             # API route handlers
-│   ├── services/            # Business logic (WhatsApp, OTP, credits, scheduler)
+│   ├── services/            # Business logic (email, OTP, credits, scheduler)
 │   └── data/                # state.json and bays.json
 ├── frontend/
 │   ├── src/                 # React source code

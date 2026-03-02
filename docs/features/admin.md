@@ -12,7 +12,7 @@ All endpoints require the `X-Admin-Key` header matching the `ADMIN_API_KEY` envi
 
 ### GET /api/admin/state
 
-Returns the full application state including users, sessions, bookings, availability, credit ledger, and WhatsApp log.
+Returns the full application state including users, sessions, bookings, availability, credit ledger, and email log.
 
 ### GET /api/admin/users
 
@@ -94,7 +94,7 @@ python admin/cli.py --url http://localhost:8000 --key dev-admin-key <command>
 | `credits <user_id> <amount> <reason>`| Adjust credits for a user              |
 | `stats`                              | Show detailed platform statistics       |
 | `export [-o filename]`               | Download full state.json to local file  |
-| `logs`                               | Show WhatsApp message log               |
+| `logs`                               | Show email message log                  |
 
 ### Examples
 
@@ -111,7 +111,7 @@ python admin/cli.py --url http://localhost:8000 --key dev-admin-key credits abc1
 # Export state to file
 python admin/cli.py --url http://localhost:8000 --key dev-admin-key export -o backup.json
 
-# View WhatsApp logs
+# View email logs
 python admin/cli.py --url http://localhost:8000 --key dev-admin-key logs
 ```
 

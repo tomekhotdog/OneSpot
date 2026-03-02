@@ -8,7 +8,7 @@ All endpoints are prefixed with `/api/`. Requests and responses use JSON. Authen
 
 ### POST /api/auth/request-otp
 
-Send a 6-digit OTP to the given phone number via WhatsApp.
+Send a 6-digit OTP to the given email address.
 
 **Auth required:** No
 

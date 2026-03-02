@@ -1,6 +1,6 @@
 # OneSpot
 
-Community parking space sharing platform for One Maidenhead residents. Bay owners declare when their space is available, and any resident can book available spaces using a credit system. Communication happens via WhatsApp.
+Community parking space sharing platform for One Maidenhead residents. Bay owners declare when their space is available, and any resident can book available spaces using a credit system. Communication happens via email.
 
 > **Disclaimer:** OneSpot is an independent community tool built by a resident to help neighbours share parking spaces. It is not affiliated with, endorsed by, or operated by Get Living, Greystar, or One Maidenhead management. Use at your own discretion.
 
@@ -43,7 +43,7 @@ cd frontend && npm test
 
 ## Documentation
 
-- [Setup Guide](docs/SETUP.md) -- WhatsApp API, Railway deployment, environment variables
+- [Setup Guide](docs/SETUP.md) -- Resend email API, Railway deployment, environment variables
 - [Architecture](docs/ARCHITECTURE.md) -- System overview, request flow, design decisions
 - [Development](docs/DEVELOPMENT.md) -- Local dev workflow, testing, common commands
 
@@ -53,7 +53,7 @@ cd frontend && npm test
 
 ### Features
 
-- [Authentication](docs/features/auth.md) -- WhatsApp OTP login and session management
+- [Authentication](docs/features/auth.md) -- Email OTP login and session management
 - [Availability](docs/features/availability.md) -- Owner availability declaration (recurring and one-off)
 - [Booking](docs/features/booking.md) -- Credit-based booking with extend, reduce, cancel
 - [Map](docs/features/map.md) -- Interactive schematic parking map
@@ -72,7 +72,7 @@ cd frontend && npm test
 | Backend | Python 3.11+, FastAPI |
 | Frontend | React 18, Vite, Tailwind CSS |
 | State | Single JSON file with file locking |
-| Auth | WhatsApp OTP, HTTP-only session cookies |
+| Auth | Email OTP, HTTP-only session cookies |
 | Hosting | Railway (single service + persistent volume) |
 
 ---

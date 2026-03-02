@@ -24,8 +24,8 @@ System architecture overview for the OneSpot parking space sharing platform.
                     +---------+          +----------+
                     |                               |
           +---------v---------+           +---------v---------+
-          |   state.json      |           |  WhatsApp Cloud   |
-          |   (file on disk)  |           |  API (Meta)       |
+          |   state.json      |           |  Resend Email     |
+          |   (file on disk)  |           |  API              |
           +-------------------+           +-------------------+
 ```
 
@@ -79,7 +79,7 @@ All API endpoints follow this pattern. The state manager handles serialization, 
 3. Generate 6-digit OTP, store in state.json
        |
        v
-4. Send OTP via WhatsApp (or log to console if WHATSAPP_MOCK=true)
+4. Send OTP via email (or log to console if EMAIL_MOCK=true)
        |
        v
 5. User enters OTP code
@@ -141,7 +141,7 @@ All application state lives in a single `state.json` file with the following top
   "availability":   { "<avail_id>": { ... } },
   "bookings":       { "<booking_id>": { ... } },
   "credit_ledger":  [ { ... }, ... ],
-  "whatsapp_log":   [ { ... }, ... ]
+  "email_log":      [ { ... }, ... ]
 }
 ```
 
@@ -192,8 +192,8 @@ To prevent concurrent write corruption:
 - Writes go to a temporary file first, then `os.rename()` atomically replaces the state file.
 - A backup copy (`state.backup.json`) is saved before each write.
 
-### Mock WhatsApp mode
-Setting `WHATSAPP_MOCK=true` (the default) logs OTP codes to the server console instead of sending them via WhatsApp. This enables local development without a Meta Business Account and avoids consuming message quotas during testing.
+### Mock email mode
+Setting `EMAIL_MOCK=true` (the default) logs OTP codes to the server console instead of sending them via email. This enables local development without a Resend account and avoids consuming email quotas during testing.
 
 ### Single-service deployment
 Both the API and the frontend are served from a single Railway service. FastAPI mounts the Vite build output (`frontend/dist/`) as static files with SPA fallback, eliminating the need for a separate static hosting service or CDN.

@@ -4,7 +4,7 @@ Credit-based parking space booking with modification and cancellation support.
 
 ## Overview
 
-Residents can book available parking spaces by selecting a bay and choosing contiguous hour slots. Bookings cost 1 credit per hour, transferring credits from the booker to the bay owner at booking time. Bookings can be extended (if adjacent hours are available), reduced, or cancelled with appropriate credit adjustments. WhatsApp notifications are sent to both parties on booking, modification, and cancellation.
+Residents can book available parking spaces by selecting a bay and choosing contiguous hour slots. Bookings cost 1 credit per hour, transferring credits from the booker to the bay owner at booking time. Bookings can be extended (if adjacent hours are available), reduced, or cancelled with appropriate credit adjustments. Email notifications are sent to both parties on booking, modification, and cancellation.
 
 ## Credit Transfer Service
 
@@ -29,7 +29,7 @@ Validations:
 - If owner's availability_permission is "owners_only", booker must be an owner
 - Booker must have sufficient credits (1 per hour)
 
-On success: creates booking, transfers credits, sends WhatsApp notifications to both parties.
+On success: creates booking, transfers credits, sends email notifications to both parties.
 
 ### GET /api/bookings/mine
 Returns all bookings where the current user is the booker, sorted by date descending.
