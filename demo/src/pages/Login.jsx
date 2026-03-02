@@ -8,7 +8,7 @@ export default function Login() {
   const navigate = useNavigate()
   const { fetchUser } = useAuth()
 
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('janesmith@onespot.dev')
   const [step, setStep] = useState('email') // 'email' | 'code'
   const [code, setCode] = useState('')
   const [error, setError] = useState('')
@@ -96,6 +96,14 @@ export default function Login() {
     setCountdown(0)
   }
 
+  const handleSkip = async () => {
+    const demoEmail = 'jane@onespot.demo'
+    await api.auth.requestOTP(demoEmail)
+    await api.auth.verifyOTP(demoEmail, '000000')
+    await fetchUser()
+    navigate('/')
+  }
+
   return (
     <div className="min-h-screen bg-bg-page flex items-center justify-center p-4">
       <div className="w-full max-w-content">
@@ -126,14 +134,22 @@ export default function Login() {
                 <p className="text-accent-red text-body mt-2">{error}</p>
               )}
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full mt-4 bg-primary text-white py-2.5 rounded-button font-medium
-                  hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Sending...' : 'Send Code'}
-              </button>
+              <div className="relative group">
+                <button
+                  type="submit"
+                  disabled
+                  className="w-full mt-4 bg-primary text-white py-2.5 rounded-button font-medium
+                    opacity-50 cursor-not-allowed"
+                >
+                  Send Code
+                </button>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5
+                  bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap
+                  opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  Email verification is disabled in the demo
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                </div>
+              </div>
             </form>
           )}
 
@@ -194,6 +210,15 @@ export default function Login() {
             </form>
           )}
         </div>
+
+        <button
+          type="button"
+          onClick={handleSkip}
+          className="w-full mt-4 bg-accent-green text-white py-2.5 rounded-button font-medium
+            hover:opacity-90 transition-opacity"
+        >
+          Enter Demo →
+        </button>
 
         <div className="mt-4 px-2">
           <Disclaimer />

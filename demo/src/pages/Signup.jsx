@@ -10,6 +10,15 @@ export default function Signup() {
   const { fetchUser } = useAuth()
 
   const email = location.state?.email
+
+  const handleSkip = async () => {
+    const demoEmail = 'jane@onespot.demo'
+    await api.auth.requestOTP(demoEmail)
+    await api.auth.verifyOTP(demoEmail, '000000')
+    await fetchUser()
+    navigate('/')
+  }
+
   if (!email) {
     navigate('/login', { replace: true })
     return null
@@ -240,6 +249,15 @@ export default function Signup() {
             </button>
           </form>
         </div>
+
+        <button
+          type="button"
+          onClick={handleSkip}
+          className="w-full mt-4 bg-accent-green text-white py-2.5 rounded-button font-medium
+            hover:opacity-90 transition-opacity"
+        >
+          Enter Demo →
+        </button>
 
         <div className="mt-4 px-2">
           <Disclaimer />
