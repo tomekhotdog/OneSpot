@@ -9,14 +9,14 @@ export default function Signup() {
   const location = useLocation()
   const { fetchUser } = useAuth()
 
-  const phone = location.state?.phone
-  if (!phone) {
-    // Redirect to login if no phone in state
+  const email = location.state?.email
+  if (!email) {
     navigate('/login', { replace: true })
     return null
   }
 
   const [name, setName] = useState('')
+  const [phone, setPhone] = useState('+44')
   const [flatNumber, setFlatNumber] = useState('')
   const [isOwner, setIsOwner] = useState(false)
   const [bayNumber, setBayNumber] = useState('')
@@ -36,6 +36,10 @@ export default function Signup() {
       setError('Please enter your flat number.')
       return
     }
+    if (!phone.trim() || phone.length < 6) {
+      setError('Please enter your phone number.')
+      return
+    }
     if (isOwner && !bayNumber.trim()) {
       setError('Please enter your bay number.')
       return
@@ -46,7 +50,8 @@ export default function Signup() {
       await api.users.register({
         name: name.trim(),
         flat_number: flatNumber.trim(),
-        phone,
+        phone: phone.trim(),
+        email,
         is_owner: isOwner,
         bay_number: isOwner ? bayNumber.trim() : null,
         availability_permission: isOwner ? permission : 'anyone',
@@ -104,7 +109,21 @@ export default function Signup() {
                 />
               </div>
 
-              {/* Phone (read-only) */}
+              {/* Email (read-only) */}
+              <div>
+                <label className="block text-body font-medium text-text-primary mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  readOnly
+                  className="w-full px-3 py-2.5 border border-border rounded-button text-body
+                    bg-bg-page text-text-secondary cursor-not-allowed"
+                />
+              </div>
+
+              {/* Phone number (editable) */}
               <div>
                 <label className="block text-body font-medium text-text-primary mb-1">
                   Phone number
@@ -112,10 +131,12 @@ export default function Signup() {
                 <input
                   type="tel"
                   value={phone}
-                  readOnly
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+447700900001"
                   className="w-full px-3 py-2.5 border border-border rounded-button text-body
-                    bg-bg-page text-text-secondary cursor-not-allowed"
+                    focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 />
+                <p className="text-xs text-text-secondary mt-1">So other residents can contact you about parking</p>
               </div>
 
               {/* Owner toggle */}
