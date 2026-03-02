@@ -306,7 +306,7 @@ class TestBrowseAvailable:
         assert len(a001_slots) == 1
         assert a001_slots[0]["owner_name"] == "Owner"
         assert a001_slots[0]["owner_flat"] == "1A"
-        assert a001_slots[0]["level"] == "GF"
+        assert a001_slots[0]["level"] == "MZ"
 
     def test_excludes_booked_slots(
         self, sm, booker_token, owner_user, recurring_availability, booking_on_a001

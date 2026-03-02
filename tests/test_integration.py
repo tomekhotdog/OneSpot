@@ -44,24 +44,26 @@ class TestFullBookingFlow:
     """End-to-end test: OTP -> register -> availability -> browse -> book -> cancel."""
 
     def test_complete_flow(self, client, sm):
+        owner_email = "alice@example.com"
         owner_phone = "+447700900001"
+        booker_email = "bob@example.com"
         booker_phone = "+447700900002"
         monday = _next_monday()
         monday_str = monday.isoformat()
 
         # ── Step 1: Request OTP for owner ──
-        resp = client.post("/api/auth/request-otp", json={"phone": owner_phone})
+        resp = client.post("/api/auth/request-otp", json={"email": owner_email})
         assert resp.status_code == 200
 
         # ── Step 2: Get OTP code from state ──
         state = sm.read()
-        owner_otp = state.otp_requests[owner_phone].code
+        owner_otp = state.otp_requests[owner_email].code
         assert len(owner_otp) == 6
 
         # ── Step 3: Verify OTP -> is_new_user: true ──
         resp = client.post(
             "/api/auth/verify-otp",
-            json={"phone": owner_phone, "code": owner_otp},
+            json={"email": owner_email, "code": owner_otp},
         )
         assert resp.status_code == 200
         assert resp.json()["is_new_user"] is True
@@ -73,6 +75,7 @@ class TestFullBookingFlow:
                 "name": "Owner Alice",
                 "flat_number": "1A",
                 "phone": owner_phone,
+                "email": owner_email,
                 "is_owner": True,
                 "bay_number": "1",
             },
@@ -86,15 +89,15 @@ class TestFullBookingFlow:
         owner_cookies = dict(resp.cookies)
 
         # ── Step 5: Request + verify OTP for non-owner ──
-        resp = client.post("/api/auth/request-otp", json={"phone": booker_phone})
+        resp = client.post("/api/auth/request-otp", json={"email": booker_email})
         assert resp.status_code == 200
 
         state = sm.read()
-        booker_otp = state.otp_requests[booker_phone].code
+        booker_otp = state.otp_requests[booker_email].code
 
         resp = client.post(
             "/api/auth/verify-otp",
-            json={"phone": booker_phone, "code": booker_otp},
+            json={"email": booker_email, "code": booker_otp},
         )
         assert resp.status_code == 200
         assert resp.json()["is_new_user"] is True
@@ -106,6 +109,7 @@ class TestFullBookingFlow:
                 "name": "Booker Bob",
                 "flat_number": "2B",
                 "phone": booker_phone,
+                "email": booker_email,
                 "is_owner": False,
             },
         )
