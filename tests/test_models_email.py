@@ -4,7 +4,7 @@ from backend.models import User, EmailLogEntry, AppState
 
 
 def test_user_has_email_field():
-    user = User(name="Test", flat_number="1A", phone="+447700900001", email="test@example.com")
+    user = User(name="Test", phone="+447700900001", email="test@example.com")
     assert user.email == "test@example.com"
 
 

@@ -42,7 +42,6 @@ def admin_headers():
 def owner():
     return User(
         name="Owner",
-        flat_number="1A",
         phone="+447700900001",
         email="owner@example.com",
         is_owner=True,
@@ -55,7 +54,6 @@ def owner():
 def booker():
     return User(
         name="Booker",
-        flat_number="2B",
         phone="+447700900002",
         email="booker@example.com",
         is_owner=False,

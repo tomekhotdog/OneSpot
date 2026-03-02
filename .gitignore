@@ -9,6 +9,10 @@ venv/
 # Node
 node_modules/
 frontend/dist/
+demo/dist/
+
+# OS
+.DS_Store
 
 # State
 backend/data/state.json

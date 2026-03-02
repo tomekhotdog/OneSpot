@@ -89,7 +89,6 @@ def users(ctx):
     table.add_column("ID", style="dim", max_width=12)
     table.add_column("Name")
     table.add_column("Phone")
-    table.add_column("Flat")
     table.add_column("Owner", justify="center")
     table.add_column("Bay")
     table.add_column("Credits", justify="right")
@@ -101,7 +100,6 @@ def users(ctx):
             u["id"][:12],
             u["name"],
             u["phone"],
-            u["flat_number"],
             "Yes" if u["is_owner"] else "No",
             u.get("bay_number") or "-",
             Text(str(credits_val), style=credits_style),
@@ -129,7 +127,6 @@ def user(ctx, user_id):
     panel_text = Text()
     panel_text.append(f"Name:       {target['name']}\n")
     panel_text.append(f"Phone:      {target['phone']}\n")
-    panel_text.append(f"Flat:       {target['flat_number']}\n")
     panel_text.append(f"Owner:      {'Yes' if target['is_owner'] else 'No'}\n")
     panel_text.append(f"Bay:        {target.get('bay_number') or 'N/A'}\n")
     credits_val = target["credits"]

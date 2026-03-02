@@ -47,13 +47,13 @@ def render_booking_confirmed_booker(*, bay: str, date: str, start: int, end: int
     return (f"Booking confirmed — Bay {bay}", _wrap(body))
 
 
-def render_booking_confirmed_owner(*, bay: str, date: str, start: int, end: int, booker_name: str, booker_flat: str) -> tuple[str, str]:
+def render_booking_confirmed_owner(*, bay: str, date: str, start: int, end: int, booker_name: str) -> tuple[str, str]:
     """Return (subject, html) for booking notification sent to the bay owner."""
     body = f"""\
 <p style="color:#333;font-size:16px;margin:0 0 16px;">Your bay has been booked.</p>
 <table style="width:100%;border-collapse:collapse;margin:8px 0;">
 <tr><td style="padding:8px 0;color:#666;">Bay</td><td style="padding:8px 0;font-weight:bold;text-align:right;">{bay}</td></tr>
-<tr><td style="padding:8px 0;color:#666;">Booked by</td><td style="padding:8px 0;font-weight:bold;text-align:right;">{booker_name} (Flat {booker_flat})</td></tr>
+<tr><td style="padding:8px 0;color:#666;">Booked by</td><td style="padding:8px 0;font-weight:bold;text-align:right;">{booker_name}</td></tr>
 <tr><td style="padding:8px 0;color:#666;">Date</td><td style="padding:8px 0;font-weight:bold;text-align:right;">{date}</td></tr>
 <tr><td style="padding:8px 0;color:#666;">Time</td><td style="padding:8px 0;font-weight:bold;text-align:right;">{start}:00 — {end}:00</td></tr>
 </table>"""

@@ -89,7 +89,6 @@ async def get_available(
             "available_start": best_hours[0],
             "available_end": best_hours[1],
             "owner_name": owner.name,
-            "owner_flat": owner.flat_number,
         })
 
     return {"slots": slots}

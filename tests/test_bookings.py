@@ -35,7 +35,6 @@ def patch_state(sm, monkeypatch):
 def owner():
     return User(
         name="Owner",
-        flat_number="1A",
         phone="+447700900001",
         email="owner@example.com",
         is_owner=True,
@@ -48,7 +47,6 @@ def owner():
 def booker():
     return User(
         name="Booker",
-        flat_number="2B",
         phone="+447700900002",
         email="booker@example.com",
         is_owner=False,
@@ -60,7 +58,6 @@ def booker():
 def owner_restricted():
     return User(
         name="Restricted Owner",
-        flat_number="3C",
         phone="+447700900003",
         email="restricted@example.com",
         is_owner=True,
@@ -75,7 +72,6 @@ def booker_owner():
     """A booker who is also an owner (for owners_only tests)."""
     return User(
         name="Owner Booker",
-        flat_number="4D",
         phone="+447700900004",
         email="ownerbooker@example.com",
         is_owner=True,
@@ -276,7 +272,7 @@ class TestGetMine:
             end_hour=12,
             credits_charged=3,
         )
-        other_user = User(name="Other", flat_number="9Z", phone="+447700900099", email="other@example.com", credits=24)
+        other_user = User(name="Other", phone="+447700900099", email="other@example.com", credits=24)
         booking_other = Booking(
             booker_user_id=other_user.id,
             owner_user_id=owner.id,

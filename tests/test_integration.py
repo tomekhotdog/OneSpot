@@ -73,7 +73,6 @@ class TestFullBookingFlow:
             "/api/users/register",
             json={
                 "name": "Owner Alice",
-                "flat_number": "1A",
                 "phone": owner_phone,
                 "email": owner_email,
                 "is_owner": True,
@@ -107,7 +106,6 @@ class TestFullBookingFlow:
             "/api/users/register",
             json={
                 "name": "Booker Bob",
-                "flat_number": "2B",
                 "phone": booker_phone,
                 "email": booker_email,
                 "is_owner": False,

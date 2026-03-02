@@ -66,7 +66,7 @@ class TestVerifyOTP:
 
     def test_existing_user_flow(self, client, sm):
         # Create a user first
-        user = User(name="Test", flat_number="1A", phone="+447700900001", email="test@example.com")
+        user = User(name="Test", phone="+447700900001", email="test@example.com")
 
         def _add_user(s):
             s.users[user.id] = user
@@ -98,7 +98,7 @@ class TestVerifyOTP:
 class TestLogout:
     def test_logout_clears_cookie(self, client, sm):
         # Create user and session
-        user = User(name="Test", flat_number="1A", phone="+447700900001", email="test@example.com")
+        user = User(name="Test", phone="+447700900001", email="test@example.com")
         session = Session(
             user_id=user.id,
             expires_at=datetime.utcnow() + timedelta(days=7),

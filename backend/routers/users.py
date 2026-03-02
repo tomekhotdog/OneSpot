@@ -25,7 +25,6 @@ router = APIRouter()
 
 class RegisterBody(BaseModel):
     name: str
-    flat_number: str
     phone: str
     email: str
     is_owner: bool = False
@@ -35,7 +34,6 @@ class RegisterBody(BaseModel):
 
 class UpdateBody(BaseModel):
     name: Optional[str] = None
-    flat_number: Optional[str] = None
     is_owner: Optional[bool] = None
     bay_number: Optional[str] = None
     availability_permission: Optional[AvailabilityPermission] = None
@@ -52,7 +50,6 @@ async def register(body: RegisterBody, response: Response):
     now = datetime.utcnow()
     user = User(
         name=body.name,
-        flat_number=body.flat_number,
         phone=body.phone,
         email=body.email,
         is_owner=body.is_owner,
@@ -131,14 +128,26 @@ async def get_credits(user: User = Depends(get_current_user)):
     current_user = state.users.get(user.id)
     credits = current_user.credits if current_user else user.credits
 
-    # Get last 20 ledger entries for this user
-    user_ledger = [
-        entry.model_dump(mode="json")
-        for entry in state.credit_ledger
-        if entry.user_id == user.id
-    ]
-    # Sort by timestamp descending, take last 20
-    user_ledger.sort(key=lambda e: e["timestamp"], reverse=True)
-    user_ledger = user_ledger[:20]
+    # Compute lifetime totals from ledger
+    hours_used = 0
+    hours_contributed = 0
+    user_ledger_raw = []
+    for entry in state.credit_ledger:
+        if entry.user_id != user.id:
+            continue
+        user_ledger_raw.append(entry)
+        if entry.type == CreditType.BOOKING_CHARGE:
+            hours_used += abs(entry.amount)
+        elif entry.type == CreditType.BOOKING_EARNING:
+            hours_contributed += entry.amount
 
-    return {"credits": credits, "ledger": user_ledger}
+    # Sort by timestamp descending, take last 20
+    user_ledger_raw.sort(key=lambda e: e.timestamp, reverse=True)
+    user_ledger = [e.model_dump(mode="json") for e in user_ledger_raw[:20]]
+
+    return {
+        "credits": credits,
+        "hours_used": hours_used,
+        "hours_contributed": hours_contributed,
+        "ledger": user_ledger,
+    }

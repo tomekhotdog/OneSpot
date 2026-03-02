@@ -170,7 +170,7 @@ async def create_booking(
     send_message(
         owner.email,
         "booking_confirmed_owner",
-        {"bay": body.bay_number, "date": body.date, "start": body.start_hour, "end": body.end_hour, "booker_name": current_user.name, "booker_flat": current_user.flat_number},
+        {"bay": body.bay_number, "date": body.date, "start": body.start_hour, "end": body.end_hour, "booker_name": current_user.name},
         state_manager=state_manager,
     )
 

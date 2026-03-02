@@ -27,7 +27,7 @@ class TestBookingConfirmedBooker:
 class TestBookingConfirmedOwner:
     def test_contains_booker_info(self):
         subject, html = render_booking_confirmed_owner(
-            bay="A-01", date="2026-03-15", start=9, end=12, booker_name="Jane", booker_flat="2B",
+            bay="A-01", date="2026-03-15", start=9, end=12, booker_name="Jane",
         )
         assert "Jane" in html
         assert "A-01" in subject

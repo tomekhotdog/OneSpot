@@ -24,9 +24,8 @@ class AvailabilityPermission(str, Enum):
 class User(BaseModel):
     id: str = Field(default_factory=new_id)
     name: str
-    flat_number: str
     phone: str
-    email: str
+    email: str = ""
     is_owner: bool = False
     bay_number: Optional[str] = None
     availability_permission: AvailabilityPermission = AvailabilityPermission.ANYONE

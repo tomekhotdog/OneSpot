@@ -30,7 +30,7 @@ def client():
 
 def _create_authenticated_user(sm, phone="+447700900001", name="Test User"):
     """Helper to create a user with an active session. Returns (user, token)."""
-    user = User(name=name, flat_number="1A", phone=phone, email="test@example.com", credits=INITIAL_CREDITS)
+    user = User(name=name, phone=phone, email="test@example.com", credits=INITIAL_CREDITS)
     token = "test-session-token"
     session = Session(
         user_id=user.id,
@@ -50,7 +50,6 @@ class TestRegister:
     def test_success(self, client, sm):
         resp = client.post("/api/users/register", json={
             "name": "Jane Doe",
-            "flat_number": "2B",
             "phone": "+447700900001",
             "email": "jane@example.com",
             "is_owner": False,
@@ -58,7 +57,6 @@ class TestRegister:
         assert resp.status_code == 200
         data = resp.json()
         assert data["name"] == "Jane Doe"
-        assert data["flat_number"] == "2B"
         assert data["phone"] == "+447700900001"
         assert data["email"] == "jane@example.com"
         assert data["credits"] == INITIAL_CREDITS
@@ -67,7 +65,6 @@ class TestRegister:
     def test_creates_ledger_entry(self, client, sm):
         client.post("/api/users/register", json={
             "name": "Jane Doe",
-            "flat_number": "2B",
             "phone": "+447700900001",
             "email": "jane@example.com",
         })
@@ -80,7 +77,6 @@ class TestRegister:
     def test_owner_registration(self, client, sm):
         resp = client.post("/api/users/register", json={
             "name": "Bay Owner",
-            "flat_number": "3C",
             "phone": "+447700900002",
             "email": "bayowner@example.com",
             "is_owner": True,
@@ -96,13 +92,11 @@ class TestRegister:
     def test_duplicate_email_rejected(self, client, sm):
         client.post("/api/users/register", json={
             "name": "Jane",
-            "flat_number": "1A",
             "phone": "+447700900001",
             "email": "jane@example.com",
         })
         resp = client.post("/api/users/register", json={
             "name": "Jane Again",
-            "flat_number": "1B",
             "phone": "+447700900002",
             "email": "jane@example.com",
         })
@@ -138,14 +132,12 @@ class TestUpdateMe:
         user, token = _create_authenticated_user(sm)
         resp = client.patch("/api/users/me", json={
             "name": "Updated",
-            "flat_number": "5E",
             "is_owner": True,
             "bay_number": "B99",
         }, cookies={"session_token": token})
         assert resp.status_code == 200
         data = resp.json()
         assert data["name"] == "Updated"
-        assert data["flat_number"] == "5E"
         assert data["is_owner"] is True
         assert data["bay_number"] == "B99"
 

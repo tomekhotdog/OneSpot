@@ -41,7 +41,6 @@ def patch_state(sm, monkeypatch):
 def owner_user():
     return User(
         name="Owner",
-        flat_number="1A",
         phone="+447700900001",
         email="owner@example.com",
         is_owner=True,
@@ -54,7 +53,6 @@ def owner_user():
 def restricted_owner():
     return User(
         name="Restricted Owner",
-        flat_number="2A",
         phone="+447700900003",
         email="restricted@example.com",
         is_owner=True,
@@ -67,7 +65,6 @@ def restricted_owner():
 def booker_user():
     return User(
         name="Booker",
-        flat_number="3B",
         phone="+447700900002",
         email="booker@example.com",
         is_owner=False,
@@ -78,7 +75,6 @@ def booker_user():
 def another_owner():
     return User(
         name="Another Owner",
-        flat_number="4C",
         phone="+447700900004",
         email="another-owner@example.com",
         is_owner=True,
@@ -305,7 +301,6 @@ class TestBrowseAvailable:
         a001_slots = [s for s in slots if s["bay_number"] == "1"]
         assert len(a001_slots) == 1
         assert a001_slots[0]["owner_name"] == "Owner"
-        assert a001_slots[0]["owner_flat"] == "1A"
         assert a001_slots[0]["level"] == "MZ"
 
     def test_excludes_booked_slots(
