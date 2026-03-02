@@ -8,24 +8,28 @@ export default function Profile() {
   const { user, fetchUser, logout } = useAuth()
 
   const [name, setName] = useState(user?.name || '')
-  const [flatNumber, setFlatNumber] = useState(user?.flat_number || '')
   const [isOwner, setIsOwner] = useState(user?.is_owner || false)
   const [bayNumber, setBayNumber] = useState(user?.bay_number || '')
   const [permission, setPermission] = useState(user?.availability_permission || 'anyone')
   const [credits, setCredits] = useState(null)
+  const [hoursUsed, setHoursUsed] = useState(0)
+  const [hoursContributed, setHoursContributed] = useState(0)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    api.users.credits().then((data) => setCredits(data.credits)).catch(() => {})
+    api.users.credits().then((data) => {
+      setCredits(data.credits)
+      setHoursUsed(data.hours_used || 0)
+      setHoursContributed(data.hours_contributed || 0)
+    }).catch(() => {})
   }, [])
 
   // Reset form when user changes
   useEffect(() => {
     if (user) {
       setName(user.name)
-      setFlatNumber(user.flat_number)
       setIsOwner(user.is_owner)
       setBayNumber(user.bay_number || '')
       setPermission(user.availability_permission || 'anyone')
@@ -41,7 +45,6 @@ export default function Profile() {
     try {
       const updates = {
         name: name.trim(),
-        flat_number: flatNumber.trim(),
         is_owner: isOwner,
         bay_number: isOwner ? bayNumber.trim() : null,
         availability_permission: isOwner ? permission : 'anyone',
@@ -69,11 +72,26 @@ export default function Profile() {
       <h1 className="text-title-page font-bold text-text-primary mb-6">Profile</h1>
 
       {/* Credit balance */}
-      <div className="bg-primary-light rounded-card p-4 mb-6 text-center">
+      <div className="bg-primary-light rounded-card p-4 mb-4 text-center">
         <p className="text-body text-text-secondary">Credit balance</p>
         <p className="text-hero font-bold text-primary">
           {credits !== null ? credits : user.credits}
         </p>
+        <p className="text-xs text-text-secondary mt-1">1 credit = 1 hour of parking</p>
+      </div>
+
+      {/* Hours breakdown */}
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        <div className="bg-bg-card rounded-card border border-border p-4 text-center">
+          <p className="text-2xl font-bold text-text-primary">{hoursUsed}</p>
+          <p className="text-sm font-medium text-text-primary mt-1">Hours used</p>
+          <p className="text-xs text-text-secondary mt-0.5">Time you've parked in others' bays</p>
+        </div>
+        <div className="bg-bg-card rounded-card border border-border p-4 text-center">
+          <p className="text-2xl font-bold text-text-primary">{hoursContributed}</p>
+          <p className="text-sm font-medium text-text-primary mt-1">Hours contributed</p>
+          <p className="text-xs text-text-secondary mt-0.5">Time you've lent your bay out</p>
+        </div>
       </div>
 
       <form onSubmit={handleSave} className="bg-bg-card rounded-card shadow-sm border border-border p-5">
@@ -101,20 +119,6 @@ export default function Profile() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2.5 border border-border rounded-button text-body
-                focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-            />
-          </div>
-
-          {/* Flat number */}
-          <div>
-            <label className="block text-body font-medium text-text-primary mb-1">
-              Flat number
-            </label>
-            <input
-              type="text"
-              value={flatNumber}
-              onChange={(e) => setFlatNumber(e.target.value)}
               className="w-full px-3 py-2.5 border border-border rounded-button text-body
                 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             />

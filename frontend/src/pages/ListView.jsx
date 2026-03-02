@@ -106,7 +106,7 @@ export default function ListView() {
                 <div className="font-semibold text-text-primary">
                   Bay {slot.bay_number}
                   <span className="ml-2 text-xs text-text-secondary font-normal">
-                    Level {slot.level}
+                    Mezzanine Level
                   </span>
                 </div>
                 <div className="text-sm text-text-secondary mt-1">

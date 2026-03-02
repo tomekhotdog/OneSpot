@@ -46,7 +46,7 @@ export default function MapView() {
   }, [fetchStatus])
 
   const handleSelectBay = (bay) => {
-    navigate(`/book/${bay.id}?date=${date}&start=${start}&end=${end}`)
+    navigate(`/book/${bay.number}?date=${date}&start=${start}&end=${end}`)
   }
 
   return (
@@ -94,15 +94,18 @@ export default function MapView() {
         </div>
       </div>
 
-      {error && (
-        <ErrorMessage error={{ message: error }} onRetry={fetchStatus} />
-      )}
+      {/* Full-bleed map — breaks out of max-w-content */}
+      <div className="w-[100vw] relative left-1/2 -translate-x-1/2 px-4 sm:px-6 lg:px-10">
+        {error && (
+          <ErrorMessage error={{ message: error }} onRetry={fetchStatus} />
+        )}
 
-      {loading ? (
-        <Skeleton variant="card" count={3} className="mt-4" />
-      ) : (
-        <ParkingMap bays={bays} levels={levels} onSelectBay={handleSelectBay} />
-      )}
+        {loading ? (
+          <Skeleton variant="card" count={3} className="mt-4" />
+        ) : (
+          <ParkingMap bays={bays} levels={levels} onSelectBay={handleSelectBay} />
+        )}
+      </div>
     </div>
   )
 }

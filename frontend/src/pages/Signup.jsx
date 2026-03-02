@@ -17,8 +17,8 @@ export default function Signup() {
 
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('+44')
-  const [flatNumber, setFlatNumber] = useState('')
   const [isOwner, setIsOwner] = useState(false)
+  const [floor, setFloor] = useState('')
   const [bayNumber, setBayNumber] = useState('')
   const [permission, setPermission] = useState('anyone')
   const [error, setError] = useState('')
@@ -32,12 +32,12 @@ export default function Signup() {
       setError('Please enter your name.')
       return
     }
-    if (!flatNumber.trim()) {
-      setError('Please enter your flat number.')
-      return
-    }
     if (!phone.trim() || phone.length < 6) {
       setError('Please enter your phone number.')
+      return
+    }
+    if (isOwner && !floor) {
+      setError('Please select your floor.')
       return
     }
     if (isOwner && !bayNumber.trim()) {
@@ -49,11 +49,10 @@ export default function Signup() {
     try {
       await api.users.register({
         name: name.trim(),
-        flat_number: flatNumber.trim(),
         phone: phone.trim(),
         email,
         is_owner: isOwner,
-        bay_number: isOwner ? bayNumber.trim() : null,
+        bay_number: isOwner ? `${floor}${bayNumber.trim()}` : null,
         availability_permission: isOwner ? permission : 'anyone',
       })
       await fetchUser()
@@ -94,21 +93,6 @@ export default function Signup() {
                 />
               </div>
 
-              {/* Flat number */}
-              <div>
-                <label className="block text-body font-medium text-text-primary mb-1">
-                  Flat number
-                </label>
-                <input
-                  type="text"
-                  value={flatNumber}
-                  onChange={(e) => setFlatNumber(e.target.value)}
-                  placeholder="e.g. 4B"
-                  className="w-full px-3 py-2.5 border border-border rounded-button text-body
-                    focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                />
-              </div>
-
               {/* Email (read-only) */}
               <div>
                 <label className="block text-body font-medium text-text-primary mb-1">
@@ -121,6 +105,7 @@ export default function Signup() {
                   className="w-full px-3 py-2.5 border border-border rounded-button text-body
                     bg-bg-page text-text-secondary cursor-not-allowed"
                 />
+                <p className="text-xs text-text-secondary mt-1">For booking confirmations and reminders</p>
               </div>
 
               {/* Phone number (editable) */}
@@ -163,6 +148,34 @@ export default function Signup() {
               {isOwner && (
                 <>
                   <div>
+                    <label className="block text-body font-medium text-text-primary mb-2">
+                      Floor
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setFloor('G')}
+                        className={`px-3 py-2.5 border rounded-button text-body font-medium transition-colors
+                          ${floor === 'G'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border text-text-primary hover:border-gray-400'}`}
+                      >
+                        Ground level
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFloor('M')}
+                        className={`px-3 py-2.5 border rounded-button text-body font-medium transition-colors
+                          ${floor === 'M'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border text-text-primary hover:border-gray-400'}`}
+                      >
+                        Mezzanine level
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
                     <label className="block text-body font-medium text-text-primary mb-1">
                       Bay number
                     </label>
@@ -170,7 +183,7 @@ export default function Signup() {
                       type="text"
                       value={bayNumber}
                       onChange={(e) => setBayNumber(e.target.value)}
-                      placeholder="e.g. B12"
+                      placeholder="e.g. 45"
                       className="w-full px-3 py-2.5 border border-border rounded-button text-body
                         focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                     />

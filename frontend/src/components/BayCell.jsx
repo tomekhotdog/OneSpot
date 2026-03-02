@@ -20,7 +20,7 @@ export default function BayCell({ bay, onSelect }) {
     <button
       onClick={handleClick}
       disabled={bay.status !== 'available'}
-      className={`w-12 h-12 rounded-lg flex items-center justify-center text-xs font-semibold transition-colors ${style}`}
+      className={`aspect-square rounded-md flex items-center justify-center text-[clamp(8px,1.8vw,13px)] font-semibold transition-colors ${style}`}
       title={`${bay.number} - ${bay.status}`}
     >
       {label}

@@ -217,7 +217,7 @@ export default function BookingFlow() {
               onClick={handleSubmit}
               disabled={submitting}
             >
-              {submitting ? 'Booking...' : 'Confirm & Pay'}
+              {submitting ? 'Booking...' : 'Confirm & Book'}
             </button>
           </div>
         </>

@@ -3,7 +3,6 @@ import { useState } from 'react'
 export default function BookingCard({ booking, onCancel }) {
   const [cancelling, setCancelling] = useState(false)
 
-  const level = booking.bay_number?.split('-')[0] || '?'
   const isConfirmed = booking.status === 'confirmed'
   const isFuture = booking.date >= new Date().toISOString().split('T')[0]
   const canCancel = isConfirmed && isFuture && onCancel
@@ -23,7 +22,7 @@ export default function BookingCard({ booking, onCancel }) {
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="bg-primary-light text-primary text-sm font-bold rounded-button px-2 py-1">
-            L{level}
+            Mezzanine
           </div>
           <div>
             <p className="font-semibold text-text-primary">Bay {booking.bay_number}</p>

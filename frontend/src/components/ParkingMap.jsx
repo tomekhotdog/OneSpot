@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import BayCell from './BayCell'
 
 const legendItems = [
@@ -12,22 +12,24 @@ const legendItems = [
 export default function ParkingMap({ bays, levels, onSelectBay }) {
   const [activeLevel, setActiveLevel] = useState(levels?.[0]?.id || 'GF')
 
-  const levelBays = bays.filter((b) => b.level === activeLevel)
+  const { grid, cols } = useMemo(() => {
+    const levelBays = bays.filter((b) => b.level === activeLevel)
+    const maxRow = Math.max(...levelBays.map((b) => b.row), 0)
+    const maxCol = Math.max(...levelBays.map((b) => b.col), 0)
 
-  // Determine grid dimensions
-  const maxRow = Math.max(...levelBays.map((b) => b.row), 0)
-  const maxCol = Math.max(...levelBays.map((b) => b.col), 0)
-
-  // Build grid
-  const grid = []
-  for (let r = 0; r <= maxRow; r++) {
-    const row = []
-    for (let c = 0; c <= maxCol; c++) {
-      const bay = levelBays.find((b) => b.row === r && b.col === c)
-      row.push(bay || null)
+    const lookup = new Map()
+    for (const bay of levelBays) {
+      lookup.set(`${bay.row}-${bay.col}`, bay)
     }
-    grid.push(row)
-  }
+
+    const g = []
+    for (let r = 0; r <= maxRow; r++) {
+      for (let c = 0; c <= maxCol; c++) {
+        g.push(lookup.get(`${r}-${c}`) || null)
+      }
+    }
+    return { grid: g, cols: maxCol + 1 }
+  }, [bays, activeLevel])
 
   return (
     <div>
@@ -50,18 +52,17 @@ export default function ParkingMap({ bays, levels, onSelectBay }) {
 
       {/* Bay grid */}
       <div className="overflow-x-auto">
-        <div className="inline-flex flex-col gap-1.5 p-3 bg-gray-50 rounded-xl">
-          {grid.map((row, ri) => (
-            <div key={ri} className="flex gap-1.5">
-              {row.map((bay, ci) =>
-                bay ? (
-                  <BayCell key={bay.id} bay={bay} onSelect={onSelectBay} />
-                ) : (
-                  <div key={`empty-${ri}-${ci}`} className="w-12 h-12" />
-                )
-              )}
-            </div>
-          ))}
+        <div
+          className="inline-grid gap-[3px] p-3 bg-gray-50 rounded-xl w-full min-w-0"
+          style={{ gridTemplateColumns: `repeat(${cols}, minmax(28px, 1fr))` }}
+        >
+          {grid.map((bay, i) =>
+            bay ? (
+              <BayCell key={bay.id} bay={bay} onSelect={onSelectBay} />
+            ) : (
+              <div key={`e${i}`} />
+            )
+          )}
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useState, useCallback } from 'react'
 
 export default function TimelinePicker({
   availableStart,
@@ -8,6 +8,8 @@ export default function TimelinePicker({
   selectedEnd,
   onChange,
 }) {
+  const [tapState, setTapState] = useState('idle') // idle | start_set | range_set
+
   const hours = []
   for (let h = availableStart; h < availableEnd; h++) {
     hours.push(h)
@@ -24,59 +26,83 @@ export default function TimelinePicker({
     [selectedStart, selectedEnd]
   )
 
+  const hasBookedInRange = (from, to) => {
+    for (let h = from; h < to; h++) {
+      if (isBooked(h)) return true
+    }
+    return false
+  }
+
   const handleTap = (hour) => {
     if (isBooked(hour)) return
 
-    if (selectedStart == null) {
-      // No selection yet: start here
+    if (tapState === 'idle' || tapState === 'range_set') {
+      // First tap (or reset): set start hour
       onChange(hour, hour + 1)
+      setTapState('start_set')
       return
     }
 
-    // Try to extend the current selection to include this hour
-    const newStart = Math.min(selectedStart, hour)
-    const newEnd = Math.max(selectedEnd, hour + 1)
-
-    // Check if the range from newStart to newEnd has any booked hours
-    for (let h = newStart; h < newEnd; h++) {
-      if (isBooked(h)) {
-        // Non-contiguous due to booked block: reset
-        onChange(hour, hour + 1)
+    if (tapState === 'start_set') {
+      // Second tap: set end of range
+      if (hour === selectedStart) {
+        // Tapped same hour again — keep single hour selected
+        setTapState('range_set')
         return
       }
-    }
 
-    onChange(newStart, newEnd)
+      const rangeStart = Math.min(selectedStart, hour)
+      const rangeEnd = Math.max(selectedStart, hour) + 1
+
+      if (hasBookedInRange(rangeStart, rangeEnd)) {
+        // Booked hours in the way — reset to this hour
+        onChange(hour, hour + 1)
+        setTapState('start_set')
+        return
+      }
+
+      onChange(rangeStart, rangeEnd)
+      setTapState('range_set')
+    }
   }
 
+  const isStart = (hour) => selectedStart != null && hour === selectedStart && tapState === 'start_set'
+
   return (
-    <div className="flex gap-1 overflow-x-auto pb-2">
-      {hours.map((hour) => {
-        const booked = isBooked(hour)
-        const selected = isSelected(hour)
-        const unavailable = hour < availableStart || hour >= availableEnd
+    <div className="space-y-2">
+      <p className="text-xs text-text-secondary">
+        {tapState === 'idle' && 'Tap a start hour'}
+        {tapState === 'start_set' && 'Now tap an end hour'}
+        {tapState === 'range_set' && 'Tap any hour to reselect'}
+      </p>
+      <div className="flex gap-1 overflow-x-auto pb-2">
+        {hours.map((hour) => {
+          const booked = isBooked(hour)
+          const selected = isSelected(hour)
+          const start = isStart(hour)
 
-        let bgClass = 'bg-primary-light text-text-primary cursor-pointer hover:bg-primary hover:text-white'
-        if (selected) {
-          bgClass = 'bg-primary text-white cursor-pointer'
-        } else if (booked) {
-          bgClass = 'bg-accent-amber text-white cursor-not-allowed'
-        } else if (unavailable) {
-          bgClass = 'bg-gray-200 text-text-secondary cursor-not-allowed'
-        }
+          let bgClass = 'bg-primary-light text-text-primary cursor-pointer hover:bg-primary hover:text-white'
+          if (start) {
+            bgClass = 'bg-primary text-white ring-2 ring-primary-dark cursor-pointer'
+          } else if (selected) {
+            bgClass = 'bg-primary text-white cursor-pointer'
+          } else if (booked) {
+            bgClass = 'bg-accent-amber text-white cursor-not-allowed'
+          }
 
-        return (
-          <button
-            key={hour}
-            type="button"
-            className={`flex-shrink-0 w-11 h-11 rounded-button text-sm font-medium flex items-center justify-center ${bgClass}`}
-            onClick={() => handleTap(hour)}
-            disabled={booked || unavailable}
-          >
-            {hour}
-          </button>
-        )
-      })}
+          return (
+            <button
+              key={hour}
+              type="button"
+              className={`flex-shrink-0 w-11 h-11 rounded-button text-sm font-medium flex items-center justify-center ${bgClass}`}
+              onClick={() => handleTap(hour)}
+              disabled={booked}
+            >
+              {hour}
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }
