@@ -225,15 +225,15 @@ def export(ctx, output):
 @cli.command()
 @click.pass_context
 def logs(ctx):
-    """Show WhatsApp message log."""
+    """Show email message log."""
     state = _get(ctx, "/state")
-    entries = state.get("whatsapp_log", [])
+    entries = state.get("email_log", [])
 
     if not entries:
-        console.print("No WhatsApp messages logged.", style="yellow")
+        console.print("No email messages logged.", style="yellow")
         return
 
-    table = Table(title="WhatsApp Message Log", style="cyan", header_style="bold blue")
+    table = Table(title="Email Message Log", style="cyan", header_style="bold blue")
     table.add_column("Time", style="dim")
     table.add_column("Recipient")
     table.add_column("Template")
