@@ -44,6 +44,7 @@ def owner():
         name="Owner",
         flat_number="1A",
         phone="+447700900001",
+        email="owner@example.com",
         is_owner=True,
         bay_number="1",
         credits=24,
@@ -56,6 +57,7 @@ def booker():
         name="Booker",
         flat_number="2B",
         phone="+447700900002",
+        email="booker@example.com",
         is_owner=False,
         credits=24,
     )

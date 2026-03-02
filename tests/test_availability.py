@@ -24,12 +24,12 @@ def patch_state(sm, monkeypatch):
 
 @pytest.fixture
 def owner_user():
-    return User(name="Owner", flat_number="1A", phone="+447700900001", is_owner=True, bay_number="B1")
+    return User(name="Owner", flat_number="1A", phone="+447700900001", email="owner@example.com", is_owner=True, bay_number="B1")
 
 
 @pytest.fixture
 def non_owner_user():
-    return User(name="Renter", flat_number="2B", phone="+447700900002", is_owner=False)
+    return User(name="Renter", flat_number="2B", phone="+447700900002", email="renter@example.com", is_owner=False)
 
 
 @pytest.fixture

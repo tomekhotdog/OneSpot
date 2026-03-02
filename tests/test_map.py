@@ -43,6 +43,7 @@ def owner_user():
         name="Owner",
         flat_number="1A",
         phone="+447700900001",
+        email="owner@example.com",
         is_owner=True,
         bay_number="1",
         availability_permission=AvailabilityPermission.ANYONE,
@@ -55,6 +56,7 @@ def restricted_owner():
         name="Restricted Owner",
         flat_number="2A",
         phone="+447700900003",
+        email="restricted@example.com",
         is_owner=True,
         bay_number="2",
         availability_permission=AvailabilityPermission.OWNERS_ONLY,
@@ -67,6 +69,7 @@ def booker_user():
         name="Booker",
         flat_number="3B",
         phone="+447700900002",
+        email="booker@example.com",
         is_owner=False,
     )
 
@@ -77,6 +80,7 @@ def another_owner():
         name="Another Owner",
         flat_number="4C",
         phone="+447700900004",
+        email="another-owner@example.com",
         is_owner=True,
         bay_number="3",
     )

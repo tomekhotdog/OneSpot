@@ -21,7 +21,7 @@ def test_read_empty(tmp_state):
 
 def test_write_and_read(tmp_state):
     state = AppState()
-    user = User(name="Tomek", flat_number="42", phone="+447123456789")
+    user = User(name="Tomek", flat_number="42", phone="+447123456789", email="tomek@example.com")
     state.users[user.id] = user
     tmp_state.write(state)
 
@@ -32,12 +32,12 @@ def test_write_and_read(tmp_state):
 
 def test_write_creates_backup(tmp_state):
     state1 = AppState()
-    user1 = User(name="First", flat_number="1", phone="+441111111111")
+    user1 = User(name="First", flat_number="1", phone="+441111111111", email="first@example.com")
     state1.users[user1.id] = user1
     tmp_state.write(state1)
 
     state2 = AppState()
-    user2 = User(name="Second", flat_number="2", phone="+442222222222")
+    user2 = User(name="Second", flat_number="2", phone="+442222222222", email="second@example.com")
     state2.users[user2.id] = user2
     tmp_state.write(state2)
 
@@ -50,7 +50,7 @@ def test_write_creates_backup(tmp_state):
 
 def test_update_atomic(tmp_state):
     state = AppState()
-    user = User(name="Tomek", flat_number="42", phone="+447123456789")
+    user = User(name="Tomek", flat_number="42", phone="+447123456789", email="tomek@example.com")
     state.users[user.id] = user
     tmp_state.write(state)
 

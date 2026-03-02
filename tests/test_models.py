@@ -11,7 +11,7 @@ from backend.models import (
 
 
 def test_user_defaults():
-    user = User(name="Tomek", flat_number="42", phone="+447123456789")
+    user = User(name="Tomek", flat_number="42", phone="+447123456789", email="tomek@example.com")
     assert user.credits == 24
     assert user.is_owner is False
     assert user.bay_number is None
@@ -23,6 +23,7 @@ def test_user_owner():
         name="Tomek",
         flat_number="42",
         phone="+447123456789",
+        email="tomek@example.com",
         is_owner=True,
         bay_number="B-07",
     )
@@ -92,7 +93,7 @@ def test_app_state_empty():
 
 def test_app_state_roundtrip():
     state = AppState()
-    user = User(name="Tomek", flat_number="42", phone="+447123456789")
+    user = User(name="Tomek", flat_number="42", phone="+447123456789", email="tomek@example.com")
     state.users[user.id] = user
     data = state.model_dump(mode="json")
     restored = AppState.model_validate(data)

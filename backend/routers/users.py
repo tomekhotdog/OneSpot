@@ -27,6 +27,7 @@ class RegisterBody(BaseModel):
     name: str
     flat_number: str
     phone: str
+    email: str
     is_owner: bool = False
     bay_number: Optional[str] = None
     availability_permission: AvailabilityPermission = AvailabilityPermission.ANYONE
@@ -42,17 +43,18 @@ class UpdateBody(BaseModel):
 
 @router.post("/register")
 async def register(body: RegisterBody, response: Response):
-    # Check phone not already registered
+    # Check email not already registered
     state = state_manager.read()
     for u in state.users.values():
-        if u.phone == body.phone:
-            raise HTTPException(status_code=409, detail="Phone number already registered.")
+        if u.email == body.email:
+            raise HTTPException(status_code=409, detail="Email already registered.")
 
     now = datetime.utcnow()
     user = User(
         name=body.name,
         flat_number=body.flat_number,
         phone=body.phone,
+        email=body.email,
         is_owner=body.is_owner,
         bay_number=body.bay_number,
         availability_permission=body.availability_permission,

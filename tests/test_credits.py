@@ -18,8 +18,8 @@ def sm(tmp_path):
 
 @pytest.fixture
 def two_users(sm):
-    user_a = User(name="Alice", flat_number="1A", phone="+447700900001", credits=10)
-    user_b = User(name="Bob", flat_number="2B", phone="+447700900002", credits=5)
+    user_a = User(name="Alice", flat_number="1A", phone="+447700900001", email="alice@example.com", credits=10)
+    user_b = User(name="Bob", flat_number="2B", phone="+447700900002", email="bob@example.com", credits=5)
 
     def setup(state):
         state.users[user_a.id] = user_a

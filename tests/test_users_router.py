@@ -30,7 +30,7 @@ def client():
 
 def _create_authenticated_user(sm, phone="+447700900001", name="Test User"):
     """Helper to create a user with an active session. Returns (user, token)."""
-    user = User(name=name, flat_number="1A", phone=phone, credits=INITIAL_CREDITS)
+    user = User(name=name, flat_number="1A", phone=phone, email="test@example.com", credits=INITIAL_CREDITS)
     token = "test-session-token"
     session = Session(
         user_id=user.id,
@@ -52,6 +52,7 @@ class TestRegister:
             "name": "Jane Doe",
             "flat_number": "2B",
             "phone": "+447700900001",
+            "email": "jane@example.com",
             "is_owner": False,
         })
         assert resp.status_code == 200
@@ -59,6 +60,7 @@ class TestRegister:
         assert data["name"] == "Jane Doe"
         assert data["flat_number"] == "2B"
         assert data["phone"] == "+447700900001"
+        assert data["email"] == "jane@example.com"
         assert data["credits"] == INITIAL_CREDITS
         assert "session_token" in resp.cookies
 
@@ -67,6 +69,7 @@ class TestRegister:
             "name": "Jane Doe",
             "flat_number": "2B",
             "phone": "+447700900001",
+            "email": "jane@example.com",
         })
         state = sm.read()
         assert len(state.credit_ledger) == 1
@@ -79,6 +82,7 @@ class TestRegister:
             "name": "Bay Owner",
             "flat_number": "3C",
             "phone": "+447700900002",
+            "email": "bayowner@example.com",
             "is_owner": True,
             "bay_number": "B12",
             "availability_permission": "owners_only",
@@ -89,16 +93,18 @@ class TestRegister:
         assert data["bay_number"] == "B12"
         assert data["availability_permission"] == "owners_only"
 
-    def test_duplicate_phone_rejected(self, client, sm):
+    def test_duplicate_email_rejected(self, client, sm):
         client.post("/api/users/register", json={
             "name": "Jane",
             "flat_number": "1A",
             "phone": "+447700900001",
+            "email": "jane@example.com",
         })
         resp = client.post("/api/users/register", json={
             "name": "Jane Again",
             "flat_number": "1B",
-            "phone": "+447700900001",
+            "phone": "+447700900002",
+            "email": "jane@example.com",
         })
         assert resp.status_code == 409
 
