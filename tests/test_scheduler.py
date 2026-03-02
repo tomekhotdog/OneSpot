@@ -27,6 +27,7 @@ def owner():
         name="Owner",
         flat_number="1A",
         phone="+447700900001",
+        email="owner@example.com",
         is_owner=True,
         bay_number="1",
         credits=24,
@@ -39,6 +40,7 @@ def booker():
         name="Booker",
         flat_number="2B",
         phone="+447700900002",
+        email="booker@example.com",
         is_owner=False,
         credits=24,
     )
@@ -116,13 +118,13 @@ class TestCheckUpcomingReminders:
 
         state = sm.read()
         assert state.bookings[booking.id].reminder_sent is True
-        # Check WhatsApp log has the reminder
+        # Check email log has the reminder
         reminder_logs = [
-            e for e in state.whatsapp_log
+            e for e in state.email_log
             if e.template == "booking_ending_reminder"
         ]
         assert len(reminder_logs) == 1
-        assert reminder_logs[0].recipient == booker.phone
+        assert reminder_logs[0].recipient == booker.email
 
         monkeypatch.undo()
 
@@ -162,7 +164,7 @@ class TestCheckUpcomingReminders:
         check_upcoming_reminders()
 
         state = sm.read()
-        assert len(state.whatsapp_log) == 0
+        assert len(state.email_log) == 0
 
         monkeypatch.undo()
 
@@ -204,7 +206,7 @@ class TestCheckUpcomingReminders:
 
         state = sm.read()
         assert state.bookings[booking.id].reminder_sent is False
-        assert len(state.whatsapp_log) == 0
+        assert len(state.email_log) == 0
 
         monkeypatch.undo()
 
@@ -245,6 +247,6 @@ class TestCheckUpcomingReminders:
 
         state = sm.read()
         assert state.bookings[booking.id].reminder_sent is False
-        assert len(state.whatsapp_log) == 0
+        assert len(state.email_log) == 0
 
         monkeypatch.undo()

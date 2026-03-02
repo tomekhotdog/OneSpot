@@ -1,4 +1,4 @@
-"""Reminder scheduler — checks for bookings ending soon and sends WhatsApp reminders."""
+"""Reminder scheduler — checks for bookings ending soon and sends email reminders."""
 
 import logging
 from datetime import datetime, date as date_type
@@ -6,7 +6,7 @@ from datetime import datetime, date as date_type
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from backend.state import state_manager
-from backend.services.whatsapp import send_message
+from backend.services.email import send_message
 
 logger = logging.getLogger(__name__)
 
@@ -30,12 +30,9 @@ def check_upcoming_reminders():
             if booker:
                 try:
                     send_message(
-                        phone=booker.phone,
-                        template="booking_ending_reminder",
-                        params={
-                            "bay": booking.bay_number,
-                            "end_time": f"{booking.end_hour}:00",
-                        },
+                        booker.email,
+                        "booking_ending_reminder",
+                        {"bay": booking.bay_number, "end_time": f"{booking.end_hour}:00"},
                         state_manager=state_manager,
                     )
                 except Exception as e:

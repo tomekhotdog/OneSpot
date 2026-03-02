@@ -14,7 +14,7 @@ from backend.dependencies import get_current_user
 from backend.models import Booking, BookingStatus, User, now_utc
 from backend.services.availability_helper import get_available_hours
 from backend.services.credits import InsufficientCreditsError, transfer_credits, refund_credits
-from backend.services.whatsapp import send_message
+from backend.services.email import send_message
 from backend.state import state_manager
 
 router = APIRouter()
@@ -160,17 +160,17 @@ async def create_booking(
         state_manager.update(remove_booking)
         raise HTTPException(status_code=400, detail="Insufficient credits")
 
-    # Send WhatsApp notifications (mock)
+    # Send email notifications
     send_message(
-        current_user.phone,
+        current_user.email,
         "booking_confirmed_booker",
         {"bay": body.bay_number, "date": body.date, "start": body.start_hour, "end": body.end_hour},
         state_manager=state_manager,
     )
     send_message(
-        owner.phone,
+        owner.email,
         "booking_confirmed_owner",
-        {"bay": body.bay_number, "date": body.date, "start": body.start_hour, "end": body.end_hour, "booker": current_user.name},
+        {"bay": body.bay_number, "date": body.date, "start": body.start_hour, "end": body.end_hour, "booker_name": current_user.name, "booker_flat": current_user.flat_number},
         state_manager=state_manager,
     )
 
@@ -361,17 +361,17 @@ async def cancel_booking(
 
     # Send notifications
     send_message(
-        current_user.phone,
-        "booking_cancelled_booker",
+        current_user.email,
+        "booking_cancelled",
         {"bay": booking.bay_number, "date": booking.date},
         state_manager=state_manager,
     )
     owner = state.users.get(booking.owner_user_id)
     if owner:
         send_message(
-            owner.phone,
-            "booking_cancelled_owner",
-            {"bay": booking.bay_number, "date": booking.date, "booker": current_user.name},
+            owner.email,
+            "booking_cancelled",
+            {"bay": booking.bay_number, "date": booking.date},
             state_manager=state_manager,
         )
 
