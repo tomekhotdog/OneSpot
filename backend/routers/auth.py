@@ -17,18 +17,18 @@ router = APIRouter()
 
 
 class RequestOTPBody(BaseModel):
-    phone: str
+    email: str
 
 
 class VerifyOTPBody(BaseModel):
-    phone: str
+    email: str
     code: str
 
 
 @router.post("/request-otp")
 async def request_otp(body: RequestOTPBody):
     try:
-        generate_otp(body.phone, state_manager=state_manager)
+        generate_otp(body.email, state_manager=state_manager)
     except OTPError as exc:
         raise HTTPException(status_code=429, detail=str(exc))
     return {"expires_in": 300}
@@ -37,7 +37,7 @@ async def request_otp(body: RequestOTPBody):
 @router.post("/verify-otp")
 async def verify_otp_endpoint(body: VerifyOTPBody, response: Response):
     try:
-        valid = verify_otp(body.phone, body.code, state_manager=state_manager)
+        valid = verify_otp(body.email, body.code, state_manager=state_manager)
     except OTPError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
 
@@ -48,7 +48,7 @@ async def verify_otp_endpoint(body: VerifyOTPBody, response: Response):
     state = state_manager.read()
     existing_user = None
     for user in state.users.values():
-        if user.phone == body.phone:
+        if user.email == body.email:
             existing_user = user
             break
 

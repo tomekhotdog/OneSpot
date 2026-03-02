@@ -30,35 +30,35 @@ def client():
 
 class TestRequestOTP:
     def test_success(self, client, sm):
-        resp = client.post("/api/auth/request-otp", json={"phone": "+447700900001"})
+        resp = client.post("/api/auth/request-otp", json={"email": "test@example.com"})
         assert resp.status_code == 200
         data = resp.json()
         assert data["expires_in"] == 300
 
     def test_stores_otp(self, client, sm):
-        client.post("/api/auth/request-otp", json={"phone": "+447700900001"})
+        client.post("/api/auth/request-otp", json={"email": "test@example.com"})
         state = sm.read()
-        assert "+447700900001" in state.otp_requests
+        assert "test@example.com" in state.otp_requests
 
     def test_rate_limit(self, client, sm):
         for _ in range(3):
-            client.post("/api/auth/request-otp", json={"phone": "+447700900001"})
-        resp = client.post("/api/auth/request-otp", json={"phone": "+447700900001"})
+            client.post("/api/auth/request-otp", json={"email": "test@example.com"})
+        resp = client.post("/api/auth/request-otp", json={"email": "test@example.com"})
         assert resp.status_code == 429
 
 
 class TestVerifyOTP:
-    def _request_otp(self, client, phone="+447700900001"):
-        client.post("/api/auth/request-otp", json={"phone": phone})
+    def _request_otp(self, client, email="test@example.com"):
+        client.post("/api/auth/request-otp", json={"email": email})
 
-    def _get_code(self, sm, phone="+447700900001"):
+    def _get_code(self, sm, email="test@example.com"):
         state = sm.read()
-        return state.otp_requests[phone].code
+        return state.otp_requests[email].code
 
     def test_new_user_flow(self, client, sm):
         self._request_otp(client)
         code = self._get_code(sm)
-        resp = client.post("/api/auth/verify-otp", json={"phone": "+447700900001", "code": code})
+        resp = client.post("/api/auth/verify-otp", json={"email": "test@example.com", "code": code})
         assert resp.status_code == 200
         data = resp.json()
         assert data["is_new_user"] is True
@@ -66,7 +66,7 @@ class TestVerifyOTP:
 
     def test_existing_user_flow(self, client, sm):
         # Create a user first
-        user = User(name="Test", flat_number="1A", phone="+447700900001")
+        user = User(name="Test", flat_number="1A", phone="+447700900001", email="test@example.com")
 
         def _add_user(s):
             s.users[user.id] = user
@@ -76,29 +76,29 @@ class TestVerifyOTP:
 
         self._request_otp(client)
         code = self._get_code(sm)
-        resp = client.post("/api/auth/verify-otp", json={"phone": "+447700900001", "code": code})
+        resp = client.post("/api/auth/verify-otp", json={"email": "test@example.com", "code": code})
         assert resp.status_code == 200
         data = resp.json()
         assert data["is_new_user"] is False
         assert "user" in data
-        assert data["user"]["phone"] == "+447700900001"
+        assert data["user"]["email"] == "test@example.com"
         assert "session_token" in resp.cookies
 
     def test_wrong_code(self, client, sm):
         self._request_otp(client)
-        resp = client.post("/api/auth/verify-otp", json={"phone": "+447700900001", "code": "000000"})
+        resp = client.post("/api/auth/verify-otp", json={"email": "test@example.com", "code": "000000"})
         assert resp.status_code == 400
         assert "Invalid code" in resp.json()["detail"]
 
     def test_no_otp_request(self, client):
-        resp = client.post("/api/auth/verify-otp", json={"phone": "+447700900001", "code": "123456"})
+        resp = client.post("/api/auth/verify-otp", json={"email": "test@example.com", "code": "123456"})
         assert resp.status_code == 400
 
 
 class TestLogout:
     def test_logout_clears_cookie(self, client, sm):
         # Create user and session
-        user = User(name="Test", flat_number="1A", phone="+447700900001")
+        user = User(name="Test", flat_number="1A", phone="+447700900001", email="test@example.com")
         session = Session(
             user_id=user.id,
             expires_at=datetime.utcnow() + timedelta(days=7),
