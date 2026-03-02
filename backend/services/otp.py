@@ -15,7 +15,7 @@ from backend.config import (
     OTP_SECRET,
 )
 from backend.models import AppState, OTPRequest
-from backend.services.whatsapp import send_otp
+from backend.services.email import send_otp
 
 
 class OTPError(Exception):
@@ -24,24 +24,24 @@ class OTPError(Exception):
     pass
 
 
-def generate_otp(phone: str, state_manager=None) -> str:
-    """Generate a 6-digit OTP for *phone*, store it, and send via WhatsApp.
+def generate_otp(email: str, state_manager=None) -> str:
+    """Generate a 6-digit OTP for *email*, store it, and send via email.
 
-    Raises OTPError if the phone has exceeded the rate limit.
+    Raises OTPError if the email has exceeded the rate limit.
     Returns the generated code (useful for testing).
     """
     now = datetime.utcnow()
 
     # Use HMAC-based generation seeded with a random nonce for uniqueness
     nonce = secrets.token_hex(8)
-    raw = hmac.new(OTP_SECRET.encode(), f"{phone}:{nonce}".encode(), hashlib.sha256).hexdigest()
+    raw = hmac.new(OTP_SECRET.encode(), f"{email}:{nonce}".encode(), hashlib.sha256).hexdigest()
     code = str(int(raw, 16) % 1_000_000).zfill(6)
 
     if state_manager is None:
         return code
 
     def _store(state: AppState) -> AppState:
-        existing = state.otp_requests.get(phone)
+        existing = state.otp_requests.get(email)
 
         # Rate limiting
         if existing is not None:
@@ -58,7 +58,7 @@ def generate_otp(phone: str, state_manager=None) -> str:
             window_start = now
             new_count = 1
 
-        state.otp_requests[phone] = OTPRequest(
+        state.otp_requests[email] = OTPRequest(
             code=code,
             created_at=now,
             expires_at=now + timedelta(seconds=OTP_EXPIRY_SECONDS),
@@ -70,14 +70,14 @@ def generate_otp(phone: str, state_manager=None) -> str:
 
     state_manager.update(_store)
 
-    # Send via WhatsApp
-    send_otp(phone, code, state_manager=state_manager)
+    # Send via email
+    send_otp(email, code, state_manager=state_manager)
 
     return code
 
 
-def verify_otp(phone: str, code: str, state_manager=None) -> bool:
-    """Verify *code* against the stored OTP for *phone*.
+def verify_otp(email: str, code: str, state_manager=None) -> bool:
+    """Verify *code* against the stored OTP for *email*.
 
     Returns True on success (and removes the OTP).
     Returns False on wrong code (increments attempt counter).
@@ -88,7 +88,7 @@ def verify_otp(phone: str, code: str, state_manager=None) -> bool:
 
     now = datetime.utcnow()
     state = state_manager.read()
-    otp_req = state.otp_requests.get(phone)
+    otp_req = state.otp_requests.get(email)
 
     if otp_req is None:
         raise OTPError("No OTP request found. Please request a new code.")
@@ -96,7 +96,7 @@ def verify_otp(phone: str, code: str, state_manager=None) -> bool:
     if now > otp_req.expires_at:
         # Clean up expired OTP
         def _remove(s: AppState) -> AppState:
-            s.otp_requests.pop(phone, None)
+            s.otp_requests.pop(email, None)
             return s
 
         state_manager.update(_remove)
@@ -104,7 +104,7 @@ def verify_otp(phone: str, code: str, state_manager=None) -> bool:
 
     if otp_req.attempts >= OTP_MAX_ATTEMPTS:
         def _remove(s: AppState) -> AppState:
-            s.otp_requests.pop(phone, None)
+            s.otp_requests.pop(email, None)
             return s
 
         state_manager.update(_remove)
@@ -113,7 +113,7 @@ def verify_otp(phone: str, code: str, state_manager=None) -> bool:
     if otp_req.code == code:
         # Success — remove OTP
         def _remove(s: AppState) -> AppState:
-            s.otp_requests.pop(phone, None)
+            s.otp_requests.pop(email, None)
             return s
 
         state_manager.update(_remove)
@@ -121,7 +121,7 @@ def verify_otp(phone: str, code: str, state_manager=None) -> bool:
 
     # Wrong code — increment attempts
     def _inc_attempts(s: AppState) -> AppState:
-        req = s.otp_requests.get(phone)
+        req = s.otp_requests.get(email)
         if req:
             req.attempts += 1
         return s
