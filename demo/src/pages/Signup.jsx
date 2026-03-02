@@ -61,7 +61,8 @@ export default function Signup() {
         phone: phone.trim(),
         email,
         is_owner: isOwner,
-        bay_number: isOwner ? `${floor}${bayNumber.trim()}` : null,
+        bay_number: isOwner ? bayNumber.trim() : null,
+        level: isOwner ? floor : null,
         availability_permission: isOwner ? permission : 'anyone',
       })
       await fetchUser()
