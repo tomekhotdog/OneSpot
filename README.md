@@ -1,12 +1,30 @@
 # OneSpot
 
-Community parking space sharing platform for One Maidenhead residents. Bay owners declare when their space is available, and any resident can book available spaces using a credit system. Communication happens via email.
+A community-built parking space sharing app for residents of One Maidenhead, a ~250-unit residential building with limited parking.
+
+<p align="center">
+  <img src="docs/screenshots/demo_screenshot.png" alt="OneSpot app screenshot" width="360" />
+</p>
+
+## What it does
+
+Many residents own a parking bay but don't use it every day. OneSpot lets them share that unused time with neighbours who need a space.
+
+- **Bay owners** set a weekly schedule for when their space is free (e.g. weekdays 9-5 while at work)
+- **Any resident** can browse available spaces on a given day and book one in a few taps
+- A **credit system** keeps things fair: you spend 1 credit per hour of parking, and earn credits back when someone parks in your bay
+- **Email notifications** confirm bookings and send reminders before your time runs out
+- An **interactive parking map** shows real-time availability across both floors (ground and mezzanine)
+
+No money changes hands. No app store download required -- it's a mobile-friendly web app.
 
 > **Disclaimer:** OneSpot is an independent community tool built by a resident to help neighbours share parking spaces. It is not affiliated with, endorsed by, or operated by Get Living, Greystar, or One Maidenhead management. Use at your own discretion.
 
 ---
 
-## Quick Start
+## Technical Details
+
+### Quick Start
 
 ### Backend
 
@@ -29,7 +47,7 @@ The frontend dev server runs at `http://localhost:5173` and proxies API requests
 
 ---
 
-## Testing
+### Testing
 
 ```bash
 # Backend tests
@@ -41,7 +59,7 @@ cd frontend && npm test
 
 ---
 
-## Documentation
+### Documentation
 
 - [Setup Guide](docs/SETUP.md) -- Resend email API, Railway deployment, environment variables
 - [Architecture](docs/ARCHITECTURE.md) -- System overview, request flow, design decisions
@@ -65,7 +83,7 @@ cd frontend && npm test
 
 ---
 
-## Tech Stack
+### Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
