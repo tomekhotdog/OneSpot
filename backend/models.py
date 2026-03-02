@@ -26,6 +26,7 @@ class User(BaseModel):
     name: str
     flat_number: str
     phone: str
+    email: str
     is_owner: bool = False
     bay_number: Optional[str] = None
     availability_permission: AvailabilityPermission = AvailabilityPermission.ANYONE
@@ -116,7 +117,7 @@ class CreditLedgerEntry(BaseModel):
     timestamp: datetime = Field(default_factory=now_utc)
 
 
-class WhatsAppLogEntry(BaseModel):
+class EmailLogEntry(BaseModel):
     id: str = Field(default_factory=new_id)
     recipient: str
     template: str
@@ -132,4 +133,4 @@ class AppState(BaseModel):
     availability: dict[str, Availability] = Field(default_factory=dict)
     bookings: dict[str, Booking] = Field(default_factory=dict)
     credit_ledger: list[CreditLedgerEntry] = Field(default_factory=list)
-    whatsapp_log: list[WhatsAppLogEntry] = Field(default_factory=list)
+    email_log: list[EmailLogEntry] = Field(default_factory=list)
